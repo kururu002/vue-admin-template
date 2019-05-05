@@ -16,11 +16,9 @@
               Home
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
+
+          <a target="_blank" :href="getGithubLink(name)">
+            <el-dropdown-item>{{ name }}</el-dropdown-item>
           </a>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">Log Out</span>
@@ -44,12 +42,16 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name'
     ])
   },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
+    },
+    getGithubLink(name) {
+      return 'https://github.com/' + name
     },
     async logout() {
       await this.$store.dispatch('user/logout')

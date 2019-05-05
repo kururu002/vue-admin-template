@@ -1,7 +1,13 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
+    <el-form
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form"
+      auto-complete="on"
+      label-position="left"
+    >
       <div class="title-container">
         <h3 class="title">Login Form</h3>
       </div>
@@ -40,14 +46,22 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
+      <el-row>
+        <el-button
+          :loading="loading"
+          type="primary"
+          style="width:100%;margin-bottom:30px;"
+          @click.native.prevent="handleLogin"
+        >Login</el-button>
+      </el-row>
+      <el-row>
+        <el-button type="info" style="width:100%;margin-bottom:30px;" @click.native.prevent="auth('github')">Login with Github</el-button>
+      </el-row>
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+        <span>password: any</span>
       </div>
-
+      {{ response }}
     </el-form>
   </div>
 </template>
@@ -73,6 +87,9 @@ export default {
       }
     }
     return {
+      isAuthenticated: this.$auth.isAuthenticated(),
+      access_token: null,
+      response: null,
       loginForm: {
         username: 'admin',
         password: '111111'
@@ -120,6 +137,55 @@ export default {
           return false
         }
       })
+    },
+    auth: function(provider) {
+      this.loading = true
+      if (this.$auth.isAuthenticated()) {
+        this.$auth.logout()
+      }
+
+      this.response = null
+
+      var this_ = this
+      this.$auth.authenticate(provider).then(function(authResponse) {
+        this_.isAuthenticated = this_.$auth.isAuthenticated()
+
+        if (provider === 'github') {
+          this_.$http.get('https://api.github.com/user').then(function(response) {
+            this_.response = response
+            this_.loginForm.username = response.data.login
+            this_.loginForm.password = response.config.headers.Authorization.split(' ')[1]
+            this_.$nextTick(() => {
+              this_.handleLogin()
+            })
+          })
+        } else if (provider === 'facebook') {
+          this_.$http.get('https://graph.facebook.com/v2.5/me', {
+            params: { access_token: this_.$auth.getToken() }
+          }).then(function(response) {
+            this_.response = response
+          })
+        } else if (provider === 'google') {
+          this_.$http.get('https://www.googleapis.com/plus/v1/people/me/openIdConnect').then(function(response) {
+            this_.response = response
+          })
+        } else if (provider === 'twitter') {
+          this_.response = authResponse.body.profile
+        } else if (provider === 'instagram') {
+          this_.response = authResponse
+        } else if (provider === 'bitbucket') {
+          this_.$http.get('https://api.bitbucket.org/2.0/user').then(function(response) {
+            this_.response = response
+          })
+        } else if (provider === 'linkedin') {
+          this_.response = authResponse
+        } else if (provider === 'live') {
+          this_.response = authResponse
+        }
+      }).catch(function(err) {
+        this_.isAuthenticated = this_.$auth.isAuthenticated()
+        this_.response = err
+      })
     }
   }
 }
@@ -129,8 +195,8 @@ export default {
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg:#283443;
-$light_gray:#fff;
+$bg: #283443;
+$light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
@@ -173,9 +239,9 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #eee;
 
 .login-container {
   min-height: 100%;
