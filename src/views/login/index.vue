@@ -55,13 +55,12 @@
         >Login</el-button>
       </el-row>
       <el-row>
-        <el-button type="info" style="width:100%;margin-bottom:30px;" @click.native.prevent="auth('github')">Login with Github</el-button>
+        <el-button type="info" style="width:100%;margin-bottom:30px;" @click.native.prevent="OAuthLogin('github')">Login with Github</el-button>
       </el-row>
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
         <span>password: any</span>
       </div>
-      {{ response }}
     </el-form>
   </div>
 </template>
@@ -87,9 +86,7 @@ export default {
       }
     }
     return {
-      isAuthenticated: this.$auth.isAuthenticated(),
       access_token: null,
-      response: null,
       loginForm: {
         username: 'admin',
         password: '111111'
@@ -138,55 +135,18 @@ export default {
         }
       })
     },
-    auth: function(provider) {
+    OAuthLogin(provider) {
       this.loading = true
-      if (this.$auth.isAuthenticated()) {
-        this.$auth.logout()
-      }
-
-      this.response = null
-
-      var this_ = this
-      this.$auth.authenticate(provider).then(function(authResponse) {
-        this_.isAuthenticated = this_.$auth.isAuthenticated()
-
-        if (provider === 'github') {
-          this_.$http.get('https://api.github.com/user').then(function(response) {
-            this_.response = response
-            this_.loginForm.username = response.data.login
-            this_.loginForm.password = response.config.headers.Authorization.split(' ')[1]
-            this_.$nextTick(() => {
-              this_.handleLogin()
-            })
-          })
-        } else if (provider === 'facebook') {
-          this_.$http.get('https://graph.facebook.com/v2.5/me', {
-            params: { access_token: this_.$auth.getToken() }
-          }).then(function(response) {
-            this_.response = response
-          })
-        } else if (provider === 'google') {
-          this_.$http.get('https://www.googleapis.com/plus/v1/people/me/openIdConnect').then(function(response) {
-            this_.response = response
-          })
-        } else if (provider === 'twitter') {
-          this_.response = authResponse.body.profile
-        } else if (provider === 'instagram') {
-          this_.response = authResponse
-        } else if (provider === 'bitbucket') {
-          this_.$http.get('https://api.bitbucket.org/2.0/user').then(function(response) {
-            this_.response = response
-          })
-        } else if (provider === 'linkedin') {
-          this_.response = authResponse
-        } else if (provider === 'live') {
-          this_.response = authResponse
-        }
-      }).catch(function(err) {
-        this_.isAuthenticated = this_.$auth.isAuthenticated()
-        this_.response = err
+      this.$store.dispatch('oauth/authenticate', provider).then((response) => {
+        this.$store.commit('user/SET_NAME', response.data.login)
+        this.$store.commit('user/SET_AVATAR', 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
+        this.$router.push({ path: this.redirect || '/' })
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     }
+
   }
 }
 </script>

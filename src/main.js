@@ -13,7 +13,6 @@ import store from './store'
 import router from './router'
 
 import VueAxios from 'vue-axios'
-import VueAuthenticate from 'vue-authenticate'
 import axios from 'axios'
 
 import '@/icons' // icon
@@ -30,17 +29,7 @@ import '@/permission' // permission control
 
 // set ElementUI lang to EN
 Vue.use(VueAxios, axios)
-Vue.use(VueAuthenticate, {
-  baseUrl: 'http://localhost:5000', // Your API domain
-  tokenName: 'access_token',
-  storageType: 'cookieStorage',
-  providers: {
-    github: {
-      clientId: '608910304b3d9bdd071a',
-      redirectUri: 'http://localhost:9528/auth/callback' // Your client app URL
-    }
-  }
-})
+
 Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false

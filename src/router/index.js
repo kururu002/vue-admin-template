@@ -89,7 +89,15 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/recorder',
+    component: Layout,
+    children: [
+      { path: 'index',
+        name: 'Recorder',
+        component: () => import('@/views/recorder/index'),
+        meta: { title: 'Recorder', icon: 'recorder' }}]
+  },
   {
     path: '/nested',
     component: Layout,

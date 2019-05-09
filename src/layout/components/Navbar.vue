@@ -54,8 +54,13 @@ export default {
       return 'https://github.com/' + name
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      if (this.$store.getters['oauth/isAuthenticated']) {
+        await this.$store.dispatch('oauth/logout')
+        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      } else {
+        await this.$store.dispatch('user/logout')
+        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      }
     }
   }
 }
