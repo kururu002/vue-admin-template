@@ -54,21 +54,20 @@
 
 <script>
 export default {
-  data() {
-    return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: '',
-        fileList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }]
+  computed: {
+    form: {
+      get: function() {
+        return this.$store.state.form.form
       }
     }
   },
+  watch: {
+    form: {
+      handler(val) {
+        this.$store.dispatch('form/updateForm', val)
+      }, deep: true }
+  },
+
   methods: {
     onSubmit() {
       this.$message('submit!')
@@ -79,7 +78,7 @@ export default {
         type: 'warning'
       })
     }, handleRemove(file, fileList) {
-      console.log(file, fileList)
+      this.$store.commit('form/removeFile', fileList)
     },
     handlePreview(file) {
       console.log(file)

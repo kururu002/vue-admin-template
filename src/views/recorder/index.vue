@@ -106,13 +106,12 @@ export default {
       this.startLoading = false
       this.recorder.stopRecording(this.stopRecordingCallback)
     }
-
   }
 }
 </script>
 <style>
 video {
-        width: 80%;
+        width: 50%;
         border-radius: 5px;
         border: 1px solid black;
     }
