@@ -1,7 +1,7 @@
 module.exports = {
   name: '',
-  region: '',
-  date1: '',
+  permission: '',
+  docker: '',
   date2: '',
   delivery: false,
   type: [],

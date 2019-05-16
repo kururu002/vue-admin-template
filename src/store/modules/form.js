@@ -5,11 +5,14 @@ const state = {
 }
 
 const mutations = {
-  UPDATE_FORM: (state, Updatedform) => {
-    state.form = Updatedform
+  UPDATE_FORM: (state, updatedForm) => {
+    state.form = updatedForm
   },
-  removeFile: (state, fileList) => {
+  updateFileList: (state, fileList) => {
     state.form.fileList = fileList
+  },
+  updateFile: (state, payload) => {
+    state.form.fileList.push({ name: payload.filename, url: payload.fileURL })
   }
 }
 

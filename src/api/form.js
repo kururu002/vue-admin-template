@@ -7,3 +7,10 @@ export function submit(data) {
     data
   })
 }
+export function upload(data) {
+  return request({
+    url: 'file/upload',
+    method: 'post',
+    data
+  })
+}
