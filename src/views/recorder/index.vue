@@ -15,21 +15,31 @@
     </el-row>
     <hr>
     <video controls autoplay playsinline :srcObject.prop="video.srcObject" :src="video.src" />
+    <hr>
+    <el-button type="primary" plain :disabled="missVideo" @click.native.prevent="uploadVideo()">上传至错误报告</el-button>
   </div></template>
 <script>
 import RecordRTC from 'recordrtc'
 export default {
   data() {
-    return { startLoading: false, video: { src: null, srcObject: null }, recorder: null }
+    return { startLoading: false, video: { src: null, srcObject: null }, recorder: null, tempBlob: null }
   },
   computed: {
+    missVideo() {
+      return this.tempBlob == null
+    },
     stopLoading() {
       return !this.startLoading
     }
   },
+  mounted() {
+    if (!this.$store.getters.s3) {
+      this.$store.dispatch('form/initAWS')
+    }
+  },
   methods: {
     log() {
-      console.log(navigator.mediaDevices.getDisplayMedia)
+      console.log(this.tempBlob)
     },
     invokeGetDisplayMedia(success, error) {
       var displaymediastreamconstraints = {
@@ -98,13 +108,30 @@ export default {
     },
     stopRecordingCallback() {
       this.video.srcObject = this.video.src = null
-      this.video.src = URL.createObjectURL(this.recorder.getBlob())
+      this.tempBlob = this.recorder.getBlob()
+      this.video.src = URL.createObjectURL(this.tempBlob)
       this.recorder.screen.stop()
       this.recorder.destroy()
     },
     stopRecord() {
       this.startLoading = false
       this.recorder.stopRecording(this.stopRecordingCallback)
+    },
+    uploadVideo() {
+      if (this.missVideo) {
+        this.alert("Doesn't contain blob file")
+      } else {
+        var _this = this
+        this.$store.dispatch('form/upload2s3', { body: this.tempBlob, filename: 'screenCapture_' + new Date() + '.webm' }).then(
+        // Log the fulfillment value
+          (val) => {
+            _this.$message(val)
+          }).catch(
+        // Log the rejection reason
+          (reason) => {
+            console.log('Error:' + reason)
+          })
+      }
     }
   }
 }

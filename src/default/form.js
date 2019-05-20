@@ -3,7 +3,7 @@ module.exports = {
   permission: '',
   docker: '',
   date2: '',
-  delivery: false,
+  scanner: false,
   type: [],
   resource: '',
   desc: '',
