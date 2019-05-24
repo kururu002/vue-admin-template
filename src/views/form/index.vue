@@ -1,8 +1,8 @@
 <template>
   <div class="app-container" @paste.passive="onPaste">
     <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="Bug Name">
-        <el-input v-model="form.name" />
+      <el-form-item label="Bug Title">
+        <el-input v-model="form.title" />
       </el-form-item>
       <el-form-item label="分享限制">
         <el-select v-model="form.permission" placeholder="限制">
@@ -11,8 +11,15 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Image Name">
-        <el-input v-model="form.docker" placeholder="可选" />
+        <el-input v-model="form.imageName" placeholder="可选" />
 
+      </el-form-item>
+      <el-form-item label="建立镜像">
+        <el-switch
+          v-model="form.imageRequired"
+          :disabled="imageFilled"
+          active-color="#13ce66"
+        />
       </el-form-item>
       <!--TODO:Key word
       <el-form-item label="关键词">
@@ -27,9 +34,10 @@
       -->
       <el-form-item label="初步扫描">
         <el-switch
-          v-model="form.scanner"
+          v-model="form.scanRequired"
           active-color="#13ce66"
         />
+        <a href="https://www.sonarqube.org/features/multi-languages/">View Support Language</a>
       </el-form-item>
       <el-form-item label="上传截图或档案">
         <el-upload
@@ -69,7 +77,10 @@
       <el-form-item>
         <el-button type="primary" @click="onSubmit">Create</el-button>
         <el-button @click="onCancel">Cancel</el-button>
-      </el-form-item></el-form>
+
+      </el-form-item>
+      <el-form-item><router-view /></el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -86,6 +97,10 @@ export default {
       get: function() {
         return this.$store.state.form.form
       }
+    },
+    // TODO:empty check
+    imageFilled: function() {
+      return this.$store.state.form.form.imageName === ''
     }
   },
   watch: {
@@ -112,7 +127,7 @@ export default {
         })
     },
     onSubmit() {
-      this.$message('submit!')
+      this.$store.dispatch('form/submitForm').then(() => this.$router.push({ name: 'Table' }))
     },
     onPaste(clipboard) {
       if (clipboard.clipboardData) {

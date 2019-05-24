@@ -1,9 +1,9 @@
 module.exports = {
-  name: '',
+  title: '',
   permission: '',
-  docker: '',
-  date2: '',
-  scanner: false,
+  imageName: '',
+  imageRequired: false,
+  scanRequired: false,
   type: [],
   resource: '',
   desc: '',

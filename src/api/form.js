@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function submit(data) {
   return request({
-    url: 'report/submit',
+    url: 'report',
     method: 'post',
     data
   })

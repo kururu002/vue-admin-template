@@ -1,6 +1,7 @@
 import defaultForm from '@/default/form'
 import AWS from 'aws-sdk'
 import { bucketName, region, appVersion, IdentityPoolId } from '@/default/aws'
+import { submit } from '@/api/form'
 const state = {
   form: defaultForm,
   s3: null
@@ -56,6 +57,9 @@ const actions = {
         }
       })
     )
+  },
+  submitForm({ state }) {
+    return submit(state.form)
   }
 }
 
