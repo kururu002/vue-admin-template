@@ -31,17 +31,16 @@ module.exports = {
       errors: true
     },
     proxy: {
-      // change xxx-api/login => mock/login
+      // change xxx-api/login =>localhost:5000/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
-      // '^/api': { target: 'http://localhost:5000/' },
       [process.env.VUE_APP_BASE_API]: {
-        // target: `http://localhost:${port}/mock`,
         target: 'http://localhost:5000',
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       }
+      // '/search': { target: 'http://hub.docker.com/api/content/v1/products', secure: false, changeOrigin: true }
     },
     after: require('./mock/mock-server.js')
   },

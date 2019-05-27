@@ -14,3 +14,9 @@ export function upload(data) {
     data
   })
 }
+export function imageList() {
+  return request({
+    url: 'docker',
+    method: 'get'
+  })
+}

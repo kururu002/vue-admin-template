@@ -13,7 +13,7 @@ const vueAuth = new VueAuthenticate(Vue.prototype.$http, {
   storageType: 'cookieStorage',
   providers: {
     github: {
-      clientId: '608910304b3d9bdd071a',
+      clientId: '608910304b3d9bdd071a', // Application client ID
       redirectUri: 'http://localhost:9528/auth/callback' // Your client app URL
     }
   }
