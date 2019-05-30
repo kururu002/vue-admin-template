@@ -58,7 +58,8 @@ const actions = {
       })
     )
   },
-  submitForm({ state }) {
+  submitForm({ state, rootGetters }) {
+    state.form.author = rootGetters.name
     return submit(state.form)
   }
 }

@@ -14,9 +14,10 @@ export function upload(data) {
     data
   })
 }
-export function imageList() {
+export function imageList(queryString) {
   return request({
     url: 'docker',
-    method: 'get'
+    method: 'get',
+    params: { queryString }
   })
 }

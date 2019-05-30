@@ -17,7 +17,12 @@
           :fetch-suggestions="imageSearch"
           placeholder="可选"
         />
-
+        密码
+        <el-input
+          v-model="form.imagePassword"
+          style="width:auto"
+          show-password
+        />
       </el-form-item>
       <el-form-item label="建立镜像">
         <el-switch
@@ -42,7 +47,7 @@
           v-model="form.scanRequired"
           active-color="#13ce66"
         />
-        <a href="https://www.sonarqube.org/features/multi-languages/">View Support Language</a>
+        <a href="https://www.sonarqube.org/features/multi-languages/">(View Support Language)</a>
       </el-form-item>
       <el-form-item label="上传截图或档案">
         <el-upload
@@ -173,7 +178,7 @@ export default {
     },
     imageSearch(queryString, cb) {
       var data = []
-      imageList().then(response => {
+      imageList(queryString).then(response => {
         if (response.data.summaries) {
           for (var item in response.data.summaries) {
             data.push({ 'value': response.data.summaries[item].name })
