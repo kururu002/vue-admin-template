@@ -4,17 +4,28 @@
       <el-button type="success" :loading="sonar_loading" icon="el-icon-check" circle @click.native.prevent="sonarLink" />Sonar Scan Result
     </el-row>
     <el-row>
-      <el-button type="success" :loading="image_loading" icon="el-icon-check" circle @click="open" />容器部署
+      <el-button type="success" :loading="image_loading" icon="el-icon-check" circle @click="open" />容器部署（上传的代码文件将存放至容器 /home/code）
     </el-row>
+    <el-row>
+      <img :src="qrcode" fit="fill"></el-row>
   </div>
 </template>
 <script>
 import { getResult } from '@/api/table.js'
+import QRCode from 'qrcode'
 export default {
   data() {
-    return { sonar_loading: true, image_loading: true }
+    return { qrcode: null, sonar_loading: true, image_loading: true }
   },
   mounted() {
+    console.log(window.location.href)
+    QRCode.toDataURL(window.location.href)
+      .then(url => {
+        this.qrcode = url
+      })
+      .catch(err => {
+        console.error(err)
+      })
     getResult(this.$route.params.reportId).then((response) => {
       if (response.data.scanCompleted) { this.sonar_loading = false }
       if (response.data.imageBuilt) { this.image_loading = false }

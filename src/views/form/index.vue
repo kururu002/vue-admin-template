@@ -1,33 +1,35 @@
 <template>
   <div class="app-container" @paste.passive="onPaste">
     <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="Bug Title">
-        <el-input v-model="form.title" />
+      <el-form-item label="错误标题">
+        <el-input v-model="form.title" :disabled="isReport" />
       </el-form-item>
       <el-form-item label="分享限制">
-        <el-select v-model="form.permission" placeholder="限制">
+        <el-select v-model="form.permission" placeholder="限制" :disabled="isReport">
           <el-option label="可查阅" value="watch" />
           <el-option label="可编辑" value="edit" />
         </el-select>
       </el-form-item>
-      <el-form-item label="Image Name">
+      <el-form-item label="镜像名称" :disabled="isReport">
         <el-autocomplete
           v-model="form.imageName"
           class="inline-input"
           :fetch-suggestions="imageSearch"
           placeholder="可选"
+          :disabled="isReport"
         />
         密码
         <el-input
           v-model="form.imagePassword"
           style="width:auto"
           show-password
+          :disabled="isReport"
         />
       </el-form-item>
       <el-form-item label="建立镜像">
         <el-switch
           v-model="form.imageRequired"
-          :disabled="imageFilled"
+          :disabled="imageFilled || isReport"
           active-color="#13ce66"
         />
       </el-form-item>
@@ -46,8 +48,9 @@
         <el-switch
           v-model="form.scanRequired"
           active-color="#13ce66"
+          :disabled="isReport"
         />
-        <a href="https://www.sonarqube.org/features/multi-languages/">(View Support Language)</a>
+        <a href="https://www.sonarqube.org/features/multi-languages/">（View Support Language）</a>
       </el-form-item>
       <el-form-item label="上传截图或档案">
         <el-upload
@@ -60,6 +63,7 @@
           :before-remove="beforeRemove"
           :file-list="form.fileList"
           multiple
+          :disabled="isReport"
         >
           <i class="el-icon-upload" />
           <div class="el-upload__text">将文件拖到此处，贴上图片，或<em>点击上传</em></div>
@@ -82,15 +86,16 @@
       </el-form-item>
       -->
       <el-form-item label="错误描述">
-        <el-input v-model="form.desc" type="textarea" />
+        <el-input v-model="form.desc" :disabled="isReport" type="textarea" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
+        <el-button type="primary" :disabled="isReport" @click="onSubmit">
+          <template v-if="isReport">Edit</template>
+          <template v-else>Create</template>
+        </el-button>
         <el-button @click="onCancel">Cancel</el-button>
-
-      </el-form-item>
-      <el-form-item><router-view /></el-form-item>
-    </el-form>
+        <el-form-item><router-view /></el-form-item>
+      </el-form-item></el-form>
   </div>
 </template>
 
@@ -113,6 +118,9 @@ export default {
     // TODO:empty check
     imageFilled: function() {
       return this.$store.state.form.form.imageName === ''
+    },
+    isReport: function() {
+      return this.$route.name === 'Report'
     }
   },
   watch: {

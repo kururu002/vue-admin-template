@@ -44,7 +44,7 @@ const actions = {
     var uploadParams = {
       Body: body,
       Bucket: 'helpmybugaws',
-      Key: rootGetters.name + '/' + filename
+      Key: rootGetters.name.replace(' ', '_').toLowerCase() + '/' + filename
     }
     return new Promise((resolve, reject) =>
       state.s3.putObject(uploadParams, function(err, data) {
