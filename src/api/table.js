@@ -7,3 +7,10 @@ export function getList(params) {
     params
   })
 }
+export function getResult(reportId) {
+  return request({
+    url: '/report',
+    method: 'get',
+    params: { reportId }
+  })
+}

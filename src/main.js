@@ -12,6 +12,9 @@ import App from './App'
 import store from './store'
 import router from './router'
 
+import VueAxios from 'vue-axios'
+import axios from 'axios'
+
 import '@/icons' // icon
 import '@/permission' // permission control
 
@@ -25,6 +28,8 @@ import '@/permission' // permission control
  */
 
 // set ElementUI lang to EN
+Vue.use(VueAxios, axios)
+
 Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
